@@ -1535,8 +1535,26 @@ class BetterRollsDice {
 			critBehavior = game.settings.get("betterrolls5e", "critBehavior");
 			
 		if (isCrit && critBehavior !== "0") {
-			critRoll = BetterRollsDice.critRoll(itm, rollFormula, rollData);
-		}
+			
+			if (critBehavior === "4") {
+				let baseRollResultParts = baseRoll._result.split(" ");
+				let baseRollResult = 0;
+			
+				for (var i = 0, length = baseRoll.parts.length; i < length; i++) {
+					if (typeof baseRoll.parts[i] === "object") {
+						//console.log("found a die roll", baseRollResultParts[i]);
+						baseRollResult = parseInt(baseRollResult) + parseInt(baseRollResultParts[i]);
+					}
+				}
+			
+				critRoll = new Roll(baseRollResult.toString());
+				critRoll.roll();
+				console.log(critRoll);
+			} else {
+				critRoll = BetterRollsDice.critRoll(itm, rollFormula, rollData);
+			}
+			
+		} 
 			
 		let damageRoll = BetterRollsDice.damageTemplate({baseRoll: baseRoll, critRoll: critRoll, labels: labels});
 		return damageRoll;
